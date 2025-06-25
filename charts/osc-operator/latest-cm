@@ -1,0 +1,8 @@
+        "CLOUD_PROVIDER": "gcp",
+        "DISABLECVM": "true",
+        "GCP_MACHINE_TYPE": "n1-standard-1",
+        "GCP_NETWORK": "default",
+        "GCP_PROJECT_ID": "it-cloud-gcp-prod-osc-devel",
+        "GCP_ZONE": "us-central1-a",
+        "PODVM_IMAGE_NAME": "podvm-image-2025032039",
+        "PROXY_TIMEOUT": "5m

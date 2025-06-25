@@ -1,0 +1,52 @@
+{{- $config := index .Values .Values.provider }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: peer-pods-cm
+  namespace: openshift-sandboxed-containers-operator
+data:
+  CLOUD_PROVIDER: "{{ .Values.provider }}"
+{{- range $key, $value := $config }}
+  {{ $key }}: "{{ $value }}"
+{{- end }}
+---
+{{- if and .Values.customCatalog.enabled (eq .Values.provider "gcp") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gcp-podvm-image-cm
+  namespace: openshift-sandboxed-containers-operator
+data:
+  IMAGE_TYPE: pre-built
+  PODVM_IMAGE_URI: bootc::quay.io/beraldoleal/podvm-bootc-rhel9-generic:{{ .Values.operatorVersion }}-{{ .Values.customCatalog.operatorBuild }}::/podvm.qcow2
+  IMAGE_BASE_NAME: "podvm-image"
+  IMAGE_VERSION_MAJ_MIN: "0.0"
+
+  INSTALL_PACKAGES: "no"
+  DISABLE_CLOUD_CONFIG: "true"
+  UPDATE_PEERPODS_CM: "yes"
+  BOOT_FIPS: "no"
+
+  BOOTC_BUILD_CONFIG: |
+    [[customizations.user]]
+    name = "peerpod"
+    password = "peerpod"
+    groups = ["wheel", "root"]
+
+    [[customizations.filesystem]]
+    mountpoint = "/"
+    minsize = "5 GiB"
+
+    [[customizations.filesystem]]
+    mountpoint = "/var/kata-containers"
+    minsize = "15 GiB"
+{{- end }}
+---
+# osc-fg-cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: osc-feature-gates
+  namespace: openshift-sandboxed-containers-operator
+data:
+  confidential: "{{ not (index .Values .Values.provider "DISABLECVM") }}"

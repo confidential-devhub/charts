@@ -1,0 +1,29 @@
+---
+dev:
+  # Enable development mode for the operator.
+  # This means it will use a custom catalog source and image.
+  enabled: true
+
+  # Only used for development purposes, not for production.
+  # For production, the official fbc will be used.
+  image: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-fbc-4-19:on-pr-4b6aec2e163ba59a6cef582a4f103411a30ff98f
+
+crossCluster:
+  # Enable cross-cluster communication.
+  # This means the trustee operator will be configured to expose routes to the
+  # outside world. When disabled, the operator will only expose services within the cluster.
+  enabled: false
+
+  # Only used when cross-cluster communication is enabled.
+  route:
+    # TLS termination type:
+    # - edge: TLS ends at the router (default)
+    # - passthrough: TLS passes through to the pod
+    # - reencrypt: TLS between client and router, and router and pod
+    termination: edge
+
+    # Insecure traffic handling:
+    # - None: reject HTTP
+    # - Redirect: redirect HTTP to HTTPS
+    # - Allow: serve both HTTP and HTTPS
+    insecurePolicy: Allow

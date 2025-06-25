@@ -1,0 +1,14 @@
+{{- if .Values.customCatalog.enabled }}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: qe-osc-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: OSC QE Quay Catalog Source
+  image: "quay.io/openshift_sandboxed_containers/openshift-sandboxed-containers-operator-catalog:{{ .Chart.AppVersion }}-{{ .Values.customCatalog.operatorBuild }}"
+  #image: "quay.io/beraldoleal/openshift_sandboxed_containers_operator-catalog:v1.9.0"
+  publisher: OSC QE
+  sourceType: grpc
+{{- end }}
