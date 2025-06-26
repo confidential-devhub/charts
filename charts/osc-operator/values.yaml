@@ -1,35 +1,9 @@
-operatorVersion: "1.9.0"
+---
+dev:
+  # Enable development mode for the operator.
+  # This means it will use a custom catalog source and image.
+  enabled: true
 
-# For pre-released builds (QE CatalogSource)
-customCatalog:
-  enabled: false
-  operatorBuild: 23
-
-# Cloud mode = peerpods
-cloudMode: false
-
-# pre-built or from-scratch
-podvmMethod: "pre-built"
-
-# If cloud, you need the following values:
-# azure, gcp, aws, libvirt
-provider: "gcp"
-
-gcp:
-  PODVM_IMAGE_NAME: ""
-  GCP_PROJECT_ID: "it-cloud-gcp-prod-osc-devel"
-  GCP_ZONE: "us-central1-a"
-  GCP_NETWORK: "default"
-  GCP_MACHINE_TYPE: "n1-standard-1"
-  PROXY_TIMEOUT: "5m"
-  DISABLECVM: true
-
-azure:
-  AZURE_IMAGE_ID: ""
-  AZURE_RESOURCE_GROUP: ""
-  AZURE_REGION: ""
-  AZURE_SUBNET_ID: ""
-  AZURE_NSG_ID: ""
-  VXLAN_PORT: "9000"
-  PROXY_TIMEOUT: "5m"
-  DISABLECVM: true
+  # Only used for development purposes, not for production.
+  # For production, the official fbc will be used.
+  image: quay.io/redhat-user-workloads/ose-osc-tenant/osc-test-fbc:osc-test-fbc-on-push-xq2c2-build-image-index 

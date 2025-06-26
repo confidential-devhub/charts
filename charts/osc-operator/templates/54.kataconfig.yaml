@@ -1,8 +1,0 @@
-{{- if .Capabilities.APIVersions.Has "kataconfiguration.openshift.io/v1" }}
-apiVersion: kataconfiguration.openshift.io/v1
-kind: KataConfig
-metadata:
-  name: example-kataconfig
-spec:
-  enablePeerPods: {{ .Values.cloudMode }}
-{{- end }}
