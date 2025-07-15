@@ -1,0 +1,10 @@
+---
+crossCluster:
+  # Enable cross-cluster communication.
+  # This means the trustee operator is installed in a different cluster and we will need to use the route.
+  # When disabled, the kbs-client will try to connect using the NodePort service.
+  enabled: false
+
+tdx:
+  # Enable TDX support.
+  enabled: false
