@@ -6,7 +6,7 @@ dev:
 
   # Only used for development purposes, not for production.
   # For production, the official fbc will be used.
-  image: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-fbc-4-19:on-pr-4b6aec2e163ba59a6cef582a4f103411a30ff98f
+  image: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-fbc-4-18:on-pr-64a96cf55f4b9294775c93513e31012ce6142b3b
 
 crossCluster:
   # Enable cross-cluster communication.
