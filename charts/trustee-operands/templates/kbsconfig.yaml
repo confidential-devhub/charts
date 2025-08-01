@@ -12,12 +12,22 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
   namespace: {{ .Release.Namespace }}
 spec:
+  # Always use kbs-config-cm (content changes based on TDX settings)
   kbsConfigMapName: kbs-config-cm
+{{- if .Values.resourcePolicy }}
+  kbsResourcePolicyConfigMapName: resource-policy-{{ .Values.resourcePolicy }}
+{{- else }}
+  kbsResourcePolicyConfigMapName: resource-policy-permissive
+{{- end }}
   kbsAuthSecretName: kbs-auth-public-key
   kbsDeploymentType: AllInOneDeployment
   kbsRvpsRefValuesConfigMapName: rvps-reference-values
   kbsSecretResources: ["kbsres1", "security-policy"]
-  kbsResourcePolicyConfigMapName: resource-policy
+{{- if and .Values.tdx.enabled (not .Values.tdx.intelTrustAuthority.enabled) }}
+  # TDX mode: Use local PCCS caching for attestation
+  tdxConfigSpec:
+    kbsTdxConfigMapName: tdx-config
+{{- end }}
   # Specify this attribute if you need to override the default attestation policy
   # the attestation-policy config map has to be created first (see operator configuration)
   # kbsAttestationPolicyConfigMapName: attestation-policy

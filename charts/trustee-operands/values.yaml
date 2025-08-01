@@ -6,5 +6,29 @@ crossCluster:
   enabled: false
 
 tdx:
-  # Enable TDX support.
+  # Enable TDX (Trust Domain Extensions) support for confidential computing
+  # This enables Intel TDX attestation capabilities
+  # When disabled: Uses the default KBS configuration without TDX-specific settings
   enabled: false
+  
+  intelTrustAuthority:
+    # Enable Intel Trust Authority (ITA) if you have access to Intel's cloud attestation service
+    # Only enable this if you have Intel Trust Authority credentials and access
+    # When enabled: Uses Intel's cloud service for enhanced attestation capabilities
+    # IMPORTANT: When enabled, you must also set the ITAKey in values-secret.yaml
+    enabled: false
+
+    # Intel Trust Authority base URL (optional, uses default if empty)
+    baseUrl: "https://api.trustauthority.intel.com"
+
+# Attestation policy configuration
+# If not specified, uses the default "attestation-policy" ConfigMap deployed by the operator
+# Supported Options so far: "generic", "azure-vtpm", "permissive"
+# To inspect the policies, see templates/policies/attestation/ directory
+attestationPolicy: ""
+
+# Resource access policy configuration
+# If not specified, uses the default "resource-policy-permissive" ConfigMap (permissive)
+# Supported Options: "permissive", "restrictive"
+# To inspect the policies, see templates/policies/resource/ directory
+resourcePolicy: "permissive"
