@@ -17,6 +17,8 @@ peerpods:
       VXLAN_PORT: "9000"
       PROXY_TIMEOUT: "5m"
       PODVM_IMAGE_URI: "oci::gcr.io/osc-gcp/podvm-disk-oci:rhel95_dmverity_luks"
+      # Set if confidential is enabled
+      INITDATA: ""
 
     gcp:
       PODVM_IMAGE_NAME: ""

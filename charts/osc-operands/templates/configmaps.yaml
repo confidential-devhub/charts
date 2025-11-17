@@ -22,7 +22,9 @@ data:
   DISABLECVM: "{{ not (.Values.confidential.enabled) }}"
 {{- $config := index .Values.peerpods.providersConfigs "all" | default dict }}
 {{- range $key, $value := $config }}
+  {{- if or (ne $key "INITDATA") ($.Values.confidential.enabled) }}
   {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}
 
 {{- $config := index .Values.peerpods.providersConfigs $provider | default dict }}
