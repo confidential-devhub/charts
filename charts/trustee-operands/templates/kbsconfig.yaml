@@ -1,43 +1,34 @@
+# Pre-create KbsConfig CR to inject custom configuration
+#
+# This KbsConfig is created BEFORE the TrusteeConfig reconciles.
+# When TrusteeConfig creates/updates the KbsConfig, it will use smart-merge
+# logic to preserve certain fields, including kbsSecretResources.
+#
+# This allows us to pre-configure which secrets are loaded into Trustee KBS
+# without requiring post-deployment patches.
 apiVersion: confidentialcontainers.org/v1alpha1
 kind: KbsConfig
 metadata:
   labels:
     app.kubernetes.io/name: kbsconfig
-    app.kubernetes.io/instance: kbsconfig
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/part-of: trustee-operator
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: trustee-operator
-  name: kbsconfig
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ .Release.Name }}-kbs-config
+  namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
-  namespace: {{ .Release.Namespace }}
 spec:
-  # Always use kbs-config-cm (content changes based on TDX settings)
-  kbsConfigMapName: kbs-config-cm
-{{- if .Values.resourcePolicy }}
-  kbsResourcePolicyConfigMapName: resource-policy-{{ .Values.resourcePolicy }}
-{{- else }}
-  kbsResourcePolicyConfigMapName: resource-policy-permissive
-{{- end }}
-  kbsAuthSecretName: kbs-auth-public-key
-  kbsDeploymentType: AllInOneDeployment
-  kbsRvpsRefValuesConfigMapName: rvps-reference-values
-  kbsSecretResources: ["kbsres1", "security-policy"]
-{{- if and .Values.tdx.enabled (not .Values.tdx.intelTrustAuthority.enabled) }}
-  # TDX mode: Use local PCCS caching for attestation
-  tdxConfigSpec:
-    kbsTdxConfigMapName: tdx-config
-{{- end }}
-  # Specify this attribute if you need to override the default attestation policy
-  # the attestation-policy config map has to be created first (see operator configuration)
-  # kbsAttestationPolicyConfigMapName: attestation-policy
-  
-  # Specify this attribute if you need to change the serviceType (the default is ClusterIP)
-  # in this example the NodePort service is created
-  # If you are creating an in-cluster trustee, you must have NodePort
-  # in-cluster trustee is not supported in production
-  kbsServiceType: {{ if .Values.crossCluster.enabled }}ClusterIP{{ else }}NodePort{{ end }}
-  
-  # Specify this attribute for enabling DEBUG log in trustee pods
-  KbsEnvVars:
-    RUST_LOG: debug
+  # List of secrets that should be loaded as KBS resources
+  # containers-policy: Multiple policy variants (insecure/reject/signed)
+  # cosign-keys: Public keys for signature verification
+  # kbsres1: Sample secret for testing
+  kbsSecretResources:
+    - containers-policy
+    - cosign-keys
+    - kbsres1
+
+  # Note: Other fields will be populated/updated by TrusteeConfig operator
+  # Fields like kbsServiceType, kbsConfigMapName, etc. are controlled by TrusteeConfig
+  # This CR only pre-configures the kbsSecretResources field, which is preserved
+  # by the smart-merge logic

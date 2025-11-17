@@ -9,6 +9,12 @@ components (such as CRs, ConfigMaps, Secrets) must be deployed separately. We
 deploy them separately to avoid conflict with missing CRDs during the
 deployment of the operands.
 
+## Requirements
+
+- **OpenShift Container Platform 4.16 or later**
+- For production: Access to Red Hat Operator catalog (`redhat-operators`)
+- For development: Access to `quay.io/redhat-user-workloads`
+
 ## Installing
 
 We recommend using `helm template` rather than `helm install`:
@@ -46,3 +52,28 @@ To remove the operator and all related resources:
 ```bash
 helm template trustee-operator ./charts/trustee-operator | oc delete -f -
 ```
+
+## Development Mode
+
+When `dev.enabled: true` in `values.yaml`, this chart will:
+
+1. Create a custom `CatalogSource` pointing to a pre-release FBC image
+2. Configure the `Subscription` to use the custom catalog
+3. Apply `ImageTagMirrorSet` and `ImageDigestMirrorSet` resources to redirect
+   `registry.redhat.io` images to `quay.io` for unreleased Konflux builds
+
+### Updating Mirror Sets
+
+Mirror sets are automatically fetched from the upstream [trustee-fbc
+repository](https://github.com/openshift/trustee-fbc). To update them:
+
+```bash
+./scripts/update-mirrors.sh
+```
+
+This script:
+- Fetches the latest mirror configuration from upstream
+- Wraps it with Helm conditionals (`{{- if .Values.dev.enabled }}`)
+- Updates `charts/trustee-operator/templates/mirrorsets.yaml`
+
+Review the changes before committing.

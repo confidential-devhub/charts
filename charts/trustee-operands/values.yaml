@@ -1,34 +1,114 @@
 ---
+# Trustee Security Profile
+#
+# Trustee is a remote attestation service that verifies the integrity of confidential
+# workloads before releasing secrets to them. The profile controls the security level
+# of this attestation service.
+#
+# Permissive: Relaxed security for development and testing
+#   - HTTP communication (no encryption in transit)
+#   - No TLS certificates required
+#   - Minimal attestation verification
+#   - Use for: Local development, testing, proof-of-concepts
+#
+# Restricted: Strict security for production deployments
+#   - HTTPS communication (encrypted in transit)
+#   - Requires TLS certificates for service and token verification
+#   - Enforces strict attestation policies
+#   - Use for: Production environments
+profileType: Permissive
+
+# Workload Location Configuration
+#
+# This setting determines where confidential workloads that need attestation are running.
+# The chart always deploys Trustee in the current cluster. This controls how workloads
+# (which may be in this cluster or other clusters) connect to this Trustee instance.
+#
+# When enabled (cross-cluster): Workloads run in different clusters
+#   - Creates an OpenShift Route to expose Trustee externally
+#   - Workloads from other clusters connect via the Route URL
+#   - Uses ClusterIP service (Route handles external access)
+#   - Use for: Serving multiple clusters from a centralized Trustee instance
+#
+# When disabled (in-cluster): Workloads run in the same cluster as Trustee
+#   - No external Route created
+#   - Workloads connect directly via NodePort service
+#   - Use for: Development, testing, single-cluster deployments
+#   - Note: In-cluster is NOT recommended for production
 crossCluster:
-  # Enable cross-cluster communication.
-  # This means the trustee operator is installed in a different cluster and we will need to use the route.
-  # When disabled, the kbs-client will try to connect using the NodePort service.
-  enabled: false
+  enabled: true
 
-tdx:
-  # Enable TDX (Trust Domain Extensions) support for confidential computing
-  # This enables Intel TDX attestation capabilities
-  # When disabled: Uses the default KBS configuration without TDX-specific settings
-  enabled: false
-  
-  intelTrustAuthority:
-    # Enable Intel Trust Authority (ITA) if you have access to Intel's cloud attestation service
-    # Only enable this if you have Intel Trust Authority credentials and access
-    # When enabled: Uses Intel's cloud service for enhanced attestation capabilities
-    # IMPORTANT: When enabled, you must also set the ITAKey in values-secret.yaml
-    enabled: false
+  # Route configuration (only used when crossCluster.enabled is true)
+  route:
+    # TLS termination type:
+    # - edge: TLS terminates at the router, backend communication is HTTP
+    # - passthrough: TLS passes through router directly to the pod
+    # - reencrypt: TLS between client-router and router-pod (requires pod TLS)
+    termination: edge
 
-    # Intel Trust Authority base URL (optional, uses default if empty)
-    baseUrl: "https://api.trustauthority.intel.com"
+    # Insecure traffic handling:
+    # - None: Reject HTTP traffic entirely
+    # - Redirect: Redirect HTTP requests to HTTPS
+    # - Allow: Serve both HTTP and HTTPS (use with caution)
+    insecurePolicy: Allow
 
-# Attestation policy configuration
-# If not specified, uses the default "attestation-policy" ConfigMap deployed by the operator
-# Supported Options so far: "generic", "azure-vtpm", "permissive"
-# To inspect the policies, see templates/policies/attestation/ directory
-attestationPolicy: ""
+# Cluster domain for constructing Route URLs (required when crossCluster.enabled is true)
+# This is used to build the external URL for the KBS Route
+# Format: apps.<cluster-name>.<base-domain>
+# Example: apps.mycluster.example.com
+#
+# Current cluster: apps.trustee-1.0.azure.sandboxedcontainers.com
+#
+# TODO: This could be auto-detected by querying:
+#   oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}'
+# For now, it must be manually specified when deploying with crossCluster.enabled=true
+clusterDomain: apps.trustee-1.0.azure.sandboxedcontainers.com
 
-# Resource access policy configuration
-# If not specified, uses the default "resource-policy-permissive" ConfigMap (permissive)
-# Supported Options: "permissive", "restrictive"
-# To inspect the policies, see templates/policies/resource/ directory
-resourcePolicy: "permissive"
+# TLS certificates configuration (required when profileType is Restricted)
+# These secrets must exist before deploying the chart
+# Example using cert-manager:
+#   apiVersion: cert-manager.io/v1
+#   kind: Certificate
+#   metadata:
+#     name: kbs-https
+#   spec:
+#     secretName: trustee-tls-cert
+#     issuerRef:
+#       name: kbs-issuer
+tlsCerts:
+  # Secret name containing TLS certificate for HTTPS endpoints
+  # Must be type kubernetes.io/tls with tls.crt and tls.key
+  httpsSecretName: ""
+
+  # Secret name containing TLS certificate for attestation token verification
+  # Must be type kubernetes.io/tls with tls.crt and tls.key
+  # Should use ECDSA algorithm with PKCS8 encoding
+  tokenSecretName: ""
+
+# Container image signature verification policy (mandatory)
+# This policy controls which container images are allowed to run
+# WARNING: A policy MUST exist, otherwise pods will fail to start
+#
+# Supported policy types:
+# - insecureAcceptAnything: Accepts all images (signed or unsigned)
+#     Use for: Testing, development, or when image signing is not used
+# - signedBy: Only accepts images signed by specific keys
+#     Use for: Production environments with signed images
+#
+# For more details, see: man containers-policy.json.5
+securityPolicy:
+  # Images requiring signature verification
+  # Just provide image URL and public key - templates handle the rest
+  # Set to empty array [] for no signature verification
+  signedImages:
+    - image: ghcr.io/confidential-containers/test-container-image-rs
+      publicKey: |
+        -----BEGIN PUBLIC KEY-----
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwQEjdCiL3ILUf07NDkDVhgKCj1C6
+        BsCfmM/zt1kNSj0/+nAqA+25XfyClYq2lJFJ6TkgCsf57cTCkXYDz9c+Yg==
+        -----END PUBLIC KEY-----
+
+# Test pods configuration
+tests:
+  enabled: true
+  namespace: trustee-tests

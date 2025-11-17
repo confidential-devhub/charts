@@ -1,0 +1,31 @@
+apiVersion: confidentialcontainers.org/v1alpha1
+kind: TrusteeConfig
+metadata:
+  labels:
+    app.kubernetes.io/name: trusteeconfig
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: trustee-operator
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  # Permissive: Uses insecure settings, suitable for development
+  # Restricted: Enforces TLS and strict attestation, required for production
+  profileType: {{ .Values.profileType }}
+
+  # Type of Kubernetes service created for the KBS (Key Broker Service)
+  kbsServiceType: {{ if .Values.crossCluster.enabled }}ClusterIP{{ else }}NodePort{{ end }}
+
+{{- if and (eq .Values.profileType "Restricted") .Values.tlsCerts.httpsSecretName }}
+  # TLS secret for HTTPS endpoints
+  httpsSpec:
+    tlsSecretName: {{ .Values.tlsCerts.httpsSecretName }}
+{{- end }}
+
+{{- if and (eq .Values.profileType "Restricted") .Values.tlsCerts.tokenSecretName }}
+  # TLS secret for attestation token signature verification
+  attestationTokenVerificationSpec:
+    tlsSecretName: {{ .Values.tlsCerts.tokenSecretName }}
+{{- end }}
