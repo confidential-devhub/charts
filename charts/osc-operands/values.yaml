@@ -4,9 +4,9 @@ confidential:
 nodeSelector:
   labels:
     baremetal:
-        node-role.kubernetes.io/kata-pool: ""
+        node-role.kubernetes.io/worker: ""
     cloud:
-        node-role.kubernetes.io/kata-remote-pool: ""
+        node-role.kubernetes.io/worker: ""
 
 # Cloud Mode
 peerpods:
