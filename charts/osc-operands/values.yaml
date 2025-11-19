@@ -12,6 +12,15 @@ nodeSelector:
 peerpods:
   enabled: true
   provider: "azure"
+  # SSH key configuration for peer pods
+  # Users should generate SSH keys using: ssh-keygen -f ${SSHKEY} -N ""
+  # Then copy keys to the chart directory and set paths relative to chart root
+  # Example: copy to files/ subdirectory and set publicKeyPath: "files/id_rsa.pub"
+  sshKey:
+    # Path to SSH public key file relative to chart directory (required to create secret)
+    publicKeyPath: ""
+    # Path to SSH private key file relative to chart directory (optional)
+    privateKeyPath: ""
   providersConfigs:
     all:
       VXLAN_PORT: "9000"
