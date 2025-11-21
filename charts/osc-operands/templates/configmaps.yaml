@@ -23,7 +23,9 @@ data:
 {{- $config := index .Values.peerpods.providersConfigs "all" | default dict }}
 {{- range $key, $value := $config }}
   {{- if or (ne $key "INITDATA") ($.Values.confidential.enabled) }}
+  {{- if and (ne $value "") (not (hasPrefix "${" $value)) }}
   {{ $key }}: "{{ $value }}"
+  {{- end }}
   {{- end }}
 {{- end }}
 

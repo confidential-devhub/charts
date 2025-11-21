@@ -11,7 +11,7 @@ nodeSelector:
 # Cloud Mode
 peerpods:
   enabled: true
-  provider: "azure"
+  provider: "${PROVIDER}"
   # SSH key configuration for peer pods
   # Users should generate SSH keys using: ssh-keygen -f ${SSHKEY} -N ""
   # Then copy keys to the chart directory and set paths relative to chart root
@@ -26,20 +26,20 @@ peerpods:
       VXLAN_PORT: "9000"
       PROXY_TIMEOUT: "5m"
       PODVM_IMAGE_URI: "oci::gcr.io/osc-gcp/podvm-disk-oci:rhel95_dmverity_luks"
-      # Set if confidential is enabled
-      INITDATA: ""
+      INITDATA: "${INITDATA}"
 
     gcp:
-      PODVM_IMAGE_NAME: ""
-      GCP_PROJECT_ID: "it-cloud-gcp-prod-osc-devel"
-      GCP_ZONE: "us-central1-a"
-      GCP_NETWORK: "default"
-      GCP_MACHINE_TYPE: "n1-standard-1"
-    
+      PODVM_IMAGE_NAME: "${PODVM_IMAGE_NAME}"
+      GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
+      GCP_ZONE: "${GCP_ZONE}"
+      GCP_REGION: "${GCP_REGION}"
+      GCP_NETWORK: "${GCP_NETWORK}"
+      GCP_MACHINE_TYPE: "${GCP_MACHINE_TYPE}"
+
     azure:
-      AZURE_IMAGE_ID: ""
-      AZURE_RESOURCE_GROUP: ""
-      AZURE_REGION: ""
-      AZURE_SUBNET_ID: ""
-      AZURE_NSG_ID: ""
+      AZURE_IMAGE_ID: "${AZURE_IMAGE_ID}"
+      AZURE_RESOURCE_GROUP: "${AZURE_RESOURCE_GROUP}"
+      AZURE_REGION: "${AZURE_REGION}"
+      AZURE_SUBNET_ID: "${AZURE_SUBNET_ID}"
+      AZURE_NSG_ID: "${AZURE_NSG_ID}"
       AZURE_INSTANCE_SIZE: ""
