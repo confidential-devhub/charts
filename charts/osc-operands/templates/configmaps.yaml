@@ -29,6 +29,11 @@ data:
 
 {{- $config := index .Values.peerpods.providersConfigs $provider | default dict }}
 {{- range $key, $value := $config }}
+  {{- if and (eq $key "AZURE_INSTANCE_SIZE") (eq $value "") }}
+  {{- /* Auto-set AZURE_INSTANCE_SIZE based on confidential mode */}}
+  {{ $key }}: "{{ if $.Values.confidential.enabled }}Standard_DC2as_v5{{ else }}Standard_D8as_v5{{ end }}"
+  {{- else if and (ne $value "") (not (hasPrefix "${" $value)) }}
   {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}
 {{- end }}
