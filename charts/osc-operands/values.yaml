@@ -13,14 +13,23 @@ peerpods:
   enabled: true
   provider: "${PROVIDER}"
   # SSH key configuration for peer pods
-  # Users should generate SSH keys using: ssh-keygen -f ${SSHKEY} -N ""
-  # Then copy keys to the chart directory and set paths relative to chart root
-  # Example: copy to files/ subdirectory and set publicKeyPath: "files/id_rsa.pub"
+  #
+  # IMPORTANT: SSH keys MUST be located in the files/ directory.
+  #
+  # The Makefile targets (make template, make deploy-peerpods) will automatically:
+  # - Generate new SSH keys in files/ if they don't exist
+  # - Reuse existing keys if already present in files/
+  #
+  # To use your own keys, copy them to files/ before running make commands:
+  #   cp ~/.ssh/id_rsa files/
+  #   cp ~/.ssh/id_rsa.pub files/
+  #
+  # Note: Paths outside files/ directory are not supported due to Helm .Files.Get limitations
   sshKey:
-    # Path to SSH public key file relative to chart directory (required to create secret)
-    publicKeyPath: ""
-    # Path to SSH private key file relative to chart directory (optional)
-    privateKeyPath: ""
+    # Path to SSH public key file (must be under files/ directory)
+    publicKeyPath: "files/id_rsa.pub"
+    # Path to SSH private key file (must be under files/ directory)
+    privateKeyPath: "files/id_rsa"
   providersConfigs:
     all:
       VXLAN_PORT: "9000"
