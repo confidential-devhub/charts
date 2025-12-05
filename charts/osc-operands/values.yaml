@@ -1,6 +1,26 @@
 confidential:
   enabled: true
 
+# Airgap / Disconnected environment support (EXPERIMENTAL)
+#
+# When enabled, creates ImageDigestMirrorSet and ImageTagMirrorSet resources
+# to redirect image pulls from public registries to your private registry.
+#
+# Before enabling, mirror all images to your registry:
+#   make mirror-images VALUES_FILE=values.yaml
+airgap:
+  enabled: false
+  registry: ""  # e.g., disconnected2.azurecr.io
+  images:
+    - registry.redhat.io/openshift-sandboxed-containers/osc-rhel9-operator@sha256:1ffb432d9a8833854fa5e5262dcbf42530dfbaadfddf6978f7bc7804b84d2e3f
+    - registry.redhat.io/openshift-sandboxed-containers/osc-cloud-api-adaptor-rhel9@sha256:7d1fa1e85af0d34c23e75868b1388eff17abe633c04a8dc55fbefcc470195c05
+    - registry.redhat.io/openshift-sandboxed-containers/osc-cloud-api-adaptor-webhook-rhel9@sha256:6802f00a939f24ecd6dad150433db5ea3fd72d171f0c410cb894d3af910fc7fd
+    - registry.redhat.io/openshift-sandboxed-containers/osc-monitor-rhel9@sha256:037cbc221ae8fda83cdf1093127795ea806ecda53893deb49cdf981e7863774c
+    - registry.redhat.io/openshift-sandboxed-containers/osc-podvm-builder-rhel9@sha256:c15f36a639fa07fee11f74c6563696ec8ef4da3fb1a99b7bd3f308dd04881339
+    - registry.redhat.io/openshift-sandboxed-containers/osc-podvm-payload-rhel9@sha256:8d6b1262c6cedd04e33441264539842d82ed057f64eda5c4bce59566bcb72558
+    - registry.redhat.io/openshift-sandboxed-containers/osc-dm-verity-image@sha256:e633bc27853f811d919e64461d0c917e659f5430458abe2304a4c85b0d871c80
+    - quay.io/bpradipt/osc-podvm-builder:offline
+
 nodeSelector:
   labels:
     baremetal:

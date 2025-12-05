@@ -62,3 +62,10 @@ endif
 .PHONY: deploy-peerpods
 deploy-peerpods: ## Deploy osc-operands with peerpods (requires PROVIDER=<azure|gcp>)
 	@$(MAKE) template PROVIDER=$(PROVIDER) | oc apply -f -
+
+.PHONY: mirror-images
+mirror-images: ## Mirror airgap images to registry (requires VALUES_FILE with airgap.registry set)
+ifndef VALUES_FILE
+	$(error VALUES_FILE is required. Usage: make mirror-images VALUES_FILE=<path/to/values.yaml>)
+endif
+	@$(SCRIPT_DIR)/mirror-to-acr.sh $(VALUES_FILE)
