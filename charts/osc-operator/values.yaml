@@ -1,4 +1,7 @@
 ---
+# Namespace where the operator is installed. The chart creates this namespace if it does not exist.
+namespace: openshift-sandboxed-containers-operator
+
 dev:
   # Enable development mode for the operator.
   # This means it will use a custom catalog source and image.
