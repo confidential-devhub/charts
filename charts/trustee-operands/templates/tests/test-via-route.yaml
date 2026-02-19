@@ -13,7 +13,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "10"
     test.description: "Tests external HTTPS route access to Trustee KBS"
-    test.url: "https://kbs-service-{{ .Release.Namespace }}.{{ .Values.clusterDomain }}"
+    test.url: "https://kbs-service-{{ .Values.namespaceOverride | default .Release.Namespace }}.{{ .Values.clusterDomain }}"
     test.resource: "default/kbsres1/key1"
     test.expected: "Certificate error expected (self-signed), route should be accessible"
     test.tls: "edge termination with OpenShift self-signed certificate"
@@ -27,7 +27,7 @@ spec:
       image: quay.io/confidential-containers/kbs-client:v0.15.0
       env:
         - name: TRUSTEE_URL
-          value: "https://kbs-service-{{ .Release.Namespace }}.{{ .Values.clusterDomain }}"
+          value: "https://kbs-service-{{ .Values.namespaceOverride | default .Release.Namespace }}.{{ .Values.clusterDomain }}"
         - name: TEST_NAME
           value: "External Route Access (HTTPS)"
       command:

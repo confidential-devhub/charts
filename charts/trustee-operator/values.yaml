@@ -2,9 +2,6 @@
 # Trustee Operator requires OpenShift Container Platform 4.16 or later.
 # See: https://docs.redhat.com/en/documentation/red_hat_build_of_trustee
 
-# Namespace where the operator is installed. The chart creates this namespace if it does not exist.
-namespace: trustee-operator-system
-
 dev:
   # Enable development mode for the operator.
   # This means it will use a custom catalog source, custom FBC image, and image mirrors.

@@ -12,7 +12,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "10"
     test.description: "Tests internal ClusterIP service access to Trustee KBS"
-    test.url: "http://kbs-service.{{ .Release.Namespace }}:8080"
+    test.url: "http://kbs-service.{{ .Values.namespaceOverride | default .Release.Namespace }}:8080"
     test.resource: "default/kbsres1/key1"
     test.expected: "res1val1 (base64: cmVzMXZhbDE=)"
   labels:
@@ -25,7 +25,7 @@ spec:
       image: quay.io/confidential-containers/kbs-client:v0.15.0
       env:
         - name: TRUSTEE_URL
-          value: "http://kbs-service.{{ .Release.Namespace }}:8080"
+          value: "http://kbs-service.{{ .Values.namespaceOverride | default .Release.Namespace }}:8080"
         - name: TEST_NAME
           value: "Direct Service Access (HTTP)"
       command:

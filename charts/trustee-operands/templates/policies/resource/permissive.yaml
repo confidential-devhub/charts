@@ -5,11 +5,11 @@ metadata:
   name: resource-policy-permissive
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
 data:
   policy.rego: |
     package policy
     # Permissive resource access policy - allows all resource access
     # Use this for development and testing environments
     default allow = true
-{{- end }} 
+{{- end }}

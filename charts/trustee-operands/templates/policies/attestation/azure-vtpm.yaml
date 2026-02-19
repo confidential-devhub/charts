@@ -5,7 +5,7 @@ metadata:
   name: attestation-policy-azure-vtpm
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
 data:
   default.rego: |
     package policy
@@ -114,4 +114,4 @@ data:
     configuration := 2 if {
       input.aztdxvtpm.quote.body.xfam in data.reference.xfam
     }
-{{- end }} 
+{{- end }}
