@@ -5,7 +5,7 @@ metadata:
   name: resource-policy-restrictive
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
 data:
   policy.rego: |
     package policy
@@ -15,4 +15,4 @@ data:
     allow {
       input["attester_type"] != "sample"
     }
-{{- end }} 
+{{- end }}

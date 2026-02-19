@@ -5,10 +5,10 @@ metadata:
   name: attestation-policy-generic
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
 data:
   default.rego: |
-    package policy 
+    package policy
     import future.keywords.every
 
     default allow = false
@@ -52,4 +52,4 @@ data:
     has_key(m, k) {
        _ = m[k]
     }
-{{- end }} 
+{{- end }}
