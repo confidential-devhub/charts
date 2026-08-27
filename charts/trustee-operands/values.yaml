@@ -1,4 +1,8 @@
 ---
+# Override the namespace where operands are deployed.
+# Must match the namespace used by the trustee-operator chart.
+namespaceOverride: trustee-operator-system
+
 # Trustee Security Profile
 #
 # Trustee is a remote attestation service that verifies the integrity of confidential

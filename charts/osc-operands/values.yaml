@@ -1,3 +1,7 @@
+# Override the namespace where operands are deployed.
+# Must match the namespace used by the osc-operator chart.
+namespaceOverride: openshift-sandboxed-containers-operator
+
 kataconfig:
   name: kataconfig-kata
 

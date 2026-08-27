@@ -1,11 +1,7 @@
 # trustee-namespace.yaml
-{{- if .Values.namespaceOverride }}
- {{- if ne .Values.namespaceOverride .Release.Namespace }}
- apiVersion: v1
- kind: Namespace
- metadata:
-   name: {{ .Values.namespaceOverride }}
-   annotations:
-     argocd.argoproj.io/sync-wave: "-3"
- {{- end }}
- {{- end }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespaceOverride | default .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"

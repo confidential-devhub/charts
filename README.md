@@ -26,19 +26,33 @@ Helm charts for deploying confidential computing operators and workloads on Kube
 > [!NOTE]
 > This is the general workflow for installing the charts. Always check each chart's `values.yaml` for available customizations and chart-specific instructions.
 
+### Namespace
+
+Each operator chart always creates the target namespace as part of the deployment. By default this is the Helm release namespace (`.Release.Namespace`). To deploy into a specific namespace, set `namespaceOverride`:
+
+```bash
+--set namespaceOverride=openshift-sandboxed-containers-operator   # for OSC
+--set namespaceOverride=trustee-operator-system                   # for Trustee
+```
+
+The operand charts reference `namespaceOverride` the same way but do not create the namespace — they expect the operator chart to have created it already.
+
 ### Two-Stage Installation
 
 ```bash
 # Use OPERATOR=trustee or OPERATOR=osc
 OPERATOR=trustee
+NS=trustee-operator-system  # optional: set a target namespace
 
-# Stage 1: Deploy operator
-helm template ${OPERATOR}-operator charts/${OPERATOR}-operator | kubectl apply -f -
+# Stage 1: Deploy operator (creates the namespace)
+helm template ${OPERATOR}-operator charts/${OPERATOR}-operator \
+  --set namespaceOverride=${NS} | kubectl apply -f -
 
 # Stage 2: Wait for operator ready (check operator deployment is available)
 
-# Stage 3: Deploy operands
-helm template ${OPERATOR}-operands charts/${OPERATOR}-operands | kubectl apply -f -
+# Stage 3: Deploy operands (into the same namespace)
+helm template ${OPERATOR}-operands charts/${OPERATOR}-operands \
+  --set namespaceOverride=${NS} | kubectl apply -f -
 ```
 
 ### Using ArgoCD
