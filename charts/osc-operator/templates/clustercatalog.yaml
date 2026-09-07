@@ -1,0 +1,12 @@
+{{- if and .Values.olmv1.enabled .Values.dev.enabled }}
+apiVersion: olm.operatorframework.io/v1
+kind: ClusterCatalog
+metadata:
+  name: {{ .Values.olmv1.catalogName }}
+spec:
+  source:
+    type: Image
+    image:
+      ref: "{{ .Values.dev.image }}"
+      pollIntervalMinutes: 1
+{{- end }}
