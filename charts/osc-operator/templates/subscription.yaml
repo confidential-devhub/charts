@@ -9,3 +9,11 @@ spec:
   name: sandboxed-containers-operator
   source: {{ if .Values.dev.enabled }}osc-operator-dev-catalog{{ else }}redhat-operators{{ end }}
   sourceNamespace: openshift-marketplace
+  {{- if .Values.subscription.config.env }}
+  config:
+    env:
+    {{- range .Values.subscription.config.env }}
+    - name: {{ .name }}
+      value: {{ .value | quote }}
+    {{- end }}
+  {{- end }}
