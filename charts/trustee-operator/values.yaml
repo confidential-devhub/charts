@@ -16,3 +16,7 @@ dev:
   # RH Build of Trustee v1.0.0 with TrusteeConfig support:
   #image: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-test-fbc:1.0.0-1762506809
   image: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-test-fbc:1.0.0-1763473348
+
+subscription:
+  config:
+    env: []
