@@ -23,10 +23,29 @@ Wait for the operator to be ready before deploying operands.
 
 ## Configuration
 
-See `values.yaml` for available options:
+| Value | Default | Description |
+|---|---|---|
+| `dev.enabled` | `true` | Create a custom `CatalogSource`, mirror sets, and subscribe to the dev catalog |
+| `dev.image` | see `values.yaml` | FBC image to use for the dev catalog |
+| `subscription.config.env` | `[]` | Extra env vars injected into the operator via the Subscription |
 
-- **Production mode**: Uses official Red Hat operators catalog
-- **Development mode**: Uses custom catalog source with pre-release images and mirror sets
+### Development mode (default)
+
+By default (`dev.enabled=true`) the chart creates:
+
+- A `trustee-operator-dev-catalog` `CatalogSource` pointing at a pre-release Konflux FBC image
+- `ImageTagMirrorSet` and `ImageDigestMirrorSet` resources to redirect `registry.redhat.io` image pulls to `quay.io/redhat-user-workloads`
+- A `Subscription` pointing at the dev catalog
+
+### Production / CI mode
+
+Set `dev.enabled=false` to skip `CatalogSource` and mirror set creation entirely. The
+`Subscription` will point to `redhat-operators` instead.
+
+```bash
+# Example: prow CI install without creating a custom catalog
+helm template trustee-operator charts/trustee-operator --set dev.enabled=false | kubectl apply -f -
+```
 
 ## Uninstalling
 
