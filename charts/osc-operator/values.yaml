@@ -1,4 +1,8 @@
 ---
+# Override the namespace where the operator is deployed.
+# The chart always creates this namespace.
+namespaceOverride: openshift-sandboxed-containers-operator
+
 dev:
   # Enable development mode for the operator.
   # When true: creates a custom CatalogSource, ImageTagMirrorSet, and ImageDigestMirrorSet,

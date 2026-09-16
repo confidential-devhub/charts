@@ -16,7 +16,8 @@ OpenShift.
 ## Installation
 
 ```bash
-helm template trustee-operator charts/trustee-operator | kubectl apply -f -
+helm template trustee-operator charts/trustee-operator \
+  | kubectl apply -f -
 ```
 
 Wait for the operator to be ready before deploying operands.
@@ -46,6 +47,9 @@ Set `dev.enabled=false` to skip `CatalogSource` and mirror set creation entirely
 # Example: prow CI install without creating a custom catalog
 helm template trustee-operator charts/trustee-operator --set dev.enabled=false | kubectl apply -f -
 ```
+- **namespaceOverride**: Target namespace for the operator. The chart always creates this namespace. Defaults to the Helm release namespace if not set.
+- **Production mode**: Uses official Red Hat operators catalog
+- **Development mode**: Uses custom catalog source with pre-release images and mirror sets
 
 ## Uninstalling
 
