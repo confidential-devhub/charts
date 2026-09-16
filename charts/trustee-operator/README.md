@@ -16,7 +16,8 @@ OpenShift.
 ## Installation
 
 ```bash
-helm template trustee-operator charts/trustee-operator | kubectl apply -f -
+helm template trustee-operator charts/trustee-operator \
+  | kubectl apply -f -
 ```
 
 Wait for the operator to be ready before deploying operands.
@@ -25,6 +26,7 @@ Wait for the operator to be ready before deploying operands.
 
 See `values.yaml` for available options:
 
+- **namespaceOverride**: Target namespace for the operator. The chart always creates this namespace. Defaults to the Helm release namespace if not set.
 - **Production mode**: Uses official Red Hat operators catalog
 - **Development mode**: Uses custom catalog source with pre-release images and mirror sets
 

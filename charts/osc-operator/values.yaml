@@ -1,4 +1,8 @@
 ---
+# Override the namespace where the operator is deployed.
+# The chart always creates this namespace.
+namespaceOverride: openshift-sandboxed-containers-operator
+
 dev:
   # Enable development mode for the operator.
   # This means it will use a custom catalog source and image.
