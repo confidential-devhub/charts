@@ -5,7 +5,10 @@ namespaceOverride: openshift-sandboxed-containers-operator
 
 dev:
   # Enable development mode for the operator.
-  # This means it will use a custom catalog source and image.
+  # When true: creates a custom CatalogSource, ImageTagMirrorSet, and ImageDigestMirrorSet,
+  #   and subscribes to the dev catalog.
+  # When false: skips CatalogSource and mirror set creation, and subscribes to redhat-operators instead.
+  # Set to false (--set dev.enabled=false) to skip catalog and mirror creation, e.g. in prow CI.
   enabled: true
 
   # Only used for development purposes, not for production.
