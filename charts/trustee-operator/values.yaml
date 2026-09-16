@@ -9,6 +9,13 @@ dev:
   # registry.redhat.io images to quay.io for unreleased Konflux builds.
   enabled: true
 
+  # Whether to create the ImageTagMirrorSet/ImageDigestMirrorSet above.
+  # Set to false when the caller already manages its own mirror rules for
+  # the same sources (e.g. CI restricted-network/disconnected workflows
+  # mirroring to a local registry instead of quay.io), to avoid conflicting
+  # mirror rules. Has no effect when dev.enabled is false.
+  createMirrorSets: true
+
   # Only used for development purposes, not for production.
   # For production, the official fbc from redhat-operators catalog will be used.
   # Image format: quay.io/redhat-user-workloads/ose-osc-tenant/trustee-fbc-4-{VERSION}:{TAG}

@@ -4,6 +4,13 @@ dev:
   # This means it will use a custom catalog source and image.
   enabled: true
 
+  # Whether to create the ImageTagMirrorSet/ImageDigestMirrorSet above.
+  # Set to false when the caller already manages its own mirror rules for
+  # the same sources (e.g. CI restricted-network/disconnected workflows
+  # mirroring to a local registry instead of quay.io), to avoid conflicting
+  # mirror rules. Has no effect when dev.enabled is false.
+  createMirrorSets: true
+
   # Only used for development purposes, not for production.
   # For production, the official fbc will be used.
   #image: quay.io/beraldoleal/openshift-sandboxed-containers-operator-catalog:1.10-1753889819
