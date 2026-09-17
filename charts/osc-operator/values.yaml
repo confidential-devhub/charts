@@ -17,3 +17,10 @@ dev:
 subscription:
   config:
     env: []
+
+# WARNING: OLMv1 requires OpenShift 4.22 or newer.
+olmv1:
+  enabled: false
+  catalogName: osc-operator-dev-catalog
+  packageName: sandboxed-containers-operator
+  channel: stable
