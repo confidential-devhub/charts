@@ -11,5 +11,4 @@ spec:
     type: Image
     image:
       ref: "{{ .Values.dev.image }}"
-      pollIntervalMinutes: 1
 {{- end }}
