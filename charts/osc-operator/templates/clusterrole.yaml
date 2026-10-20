@@ -93,6 +93,28 @@ rules:
       - peerpodconfigs/status
       - peerpods/status
     verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [console.openshift.io]
+    resources: [consoleplugins]
+    verbs: [create, list, watch]
+  - apiGroups: [console.openshift.io]
+    resources: [consoleplugins]
+    resourceNames: [osc-openshift-console-plugin, coco-openshift-console-plugin]
+    verbs: [get, update, delete]
+  # Get/update can be restricted to the singleton "cluster" Console, but
+  # list/watch cannot: the client cache issues a cluster-wide list/watch without
+  # a metadata.name field selector, which RBAC cannot authorize by resourceName.
+  - apiGroups: [operator.openshift.io]
+    resources: [consoles]
+    resourceNames: [cluster]
+    verbs: [get, update]
+  - apiGroups: [operator.openshift.io]
+    resources: [consoles]
+    verbs: [list, watch]
+  # Used to detect an uninstall (a terminating CSV) and to skip cleanup on
+  # restarts and upgrades, including from the shutdown cleanup hook.
+  - apiGroups: [operators.coreos.com]
+    resources: [clusterserviceversions]
+    verbs: [list, watch]
   - apiGroups: [config.openshift.io]
     resources: [apiservers, clusterversions, infrastructures]
     verbs: [get, list, watch]
