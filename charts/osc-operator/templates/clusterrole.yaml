@@ -94,7 +94,7 @@ rules:
       - peerpods/status
     verbs: [create, delete, get, list, patch, update, watch]
   - apiGroups: [config.openshift.io]
-    resources: [apiservers, clusterversions, infrastructures]
+    resources: [apiservers, authentications, clusterversions, infrastructures]
     verbs: [get, list, watch]
   - apiGroups: [kataconfiguration.openshift.io]
     resources: [kataconfigs, kataconfigs/finalizers, kataconfigs/status]
@@ -102,6 +102,9 @@ rules:
   - apiGroups: [node.k8s.io]
     resources: [runtimeclasses]
     verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [operator.openshift.io]
+    resources: [cloudcredentials]
+    verbs: [get, list, watch]
   - apiGroups: [security.openshift.io]
     resources: [securitycontextconstraints]
     verbs: [create, delete, get, list, patch, update, use, watch]
