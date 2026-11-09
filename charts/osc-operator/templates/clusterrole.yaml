@@ -116,7 +116,7 @@ rules:
     resources: [clusterserviceversions]
     verbs: [list, watch]
   - apiGroups: [config.openshift.io]
-    resources: [apiservers, authentications, clusterversions, infrastructures]
+    resources: [apiservers, authentications, clusterversions, infrastructures, proxies]
     verbs: [get, list, watch]
   - apiGroups: [kataconfiguration.openshift.io]
     resources: [kataconfigs, kataconfigs/finalizers, kataconfigs/status]
