@@ -1,4 +1,4 @@
-{{- if .Values.dev.enabled }}
+{{- if and .Values.dev.enabled .Values.dev.createMirrorSets }}
 apiVersion: config.openshift.io/v1
 kind: ImageTagMirrorSet
 metadata:
