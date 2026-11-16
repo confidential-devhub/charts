@@ -1,3 +1,4 @@
+{{- if .Values.dev.createMirrorSets }}
 apiVersion: config.openshift.io/v1
 kind: ImageTagMirrorSet
 metadata:
@@ -69,3 +70,4 @@ spec:
     - mirrors:
         - quay.io/redhat-user-workloads/ose-osc-tenant/osc-dm-verity-image
       source: registry.redhat.io/openshift-sandboxed-containers/osc-dm-verity-image
+{{- end }}
